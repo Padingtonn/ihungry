@@ -30,16 +30,14 @@ def get(url):
 def extract_links_from_list(html):
     soup = BeautifulSoup(html, "html.parser")
     links = set()
-    # ссылки рецептов обычно под /recepty/...
+    # ссылки рецептов
     for a in soup.select('a[href^="/recepty/"]'):
         href = a.get("href")
-        # исключим списки и фильтры
         if href.count("/") > 2:
             links.add(urljoin(BASE, href.split("?")[0]))
     return sorted(links)
 
 def parse_json_ld(soup):
-    # берем все <script type="application/ld+json"> и ищем тип Recipe
     data = []
     for tag in soup.find_all("script", type="application/ld+json"):
         try:
@@ -88,12 +86,10 @@ def parse_recipe(url):
     # ингредиенты
     ingredients = []
     for it in j.get("recipeIngredient", []) or []:
-        # строки типа "Сахар — 50 г" стараемся разобрать
         name = norm_text(it)
         qty = 0.0; unit = "г"
         m = re.search(r"([\d\.,/]+)\s*([^\d]+)$", name)
         if m:
-            # отделим количество от конца строки (грубый хак)
             try:
                 qty = float(str(m.group(1)).replace(",", ".").split("/")[0])
             except:

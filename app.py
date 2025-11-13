@@ -26,11 +26,11 @@ def list_recipes():
     tag = request.args.get("tag")
     max_cal = request.args.get("maxCalories", type=int)
 
-    # параметры каталога
-    group = request.args.get("group")  # breakfast / lunch / dinner / dessert / cocktail
+    #каталога
+    group = request.args.get("group") 
     cal_group = request.args.get("cal")
 
-    # прямой фильтр по приёму пищи
+    #фильтр
     meal_time = request.args.get("meal_time")
 
     base_sql = """
@@ -55,17 +55,15 @@ def list_recipes():
         conds.append("r.calories <= ?")
         params.append(max_cal)
 
-    # group из каталога
     if group in ("breakfast", "lunch", "dinner", "dessert", "cocktail"):
         conds.append("r.meal_time = ?")
         params.append(group)
 
-    # явный meal_time имеет приоритет (если передан)
+    
     if meal_time:
         conds.append("r.meal_time = ?")
         params.append(meal_time)
 
-    # калорийность для каталога
     if cal_group == "low":
         conds.append("r.calories <= 400")
     elif cal_group == "balanced":

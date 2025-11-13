@@ -1,10 +1,4 @@
 # scrape_eda_by_meal.py
-"""
-Импорт рецептов с eda.ru в базу ihungry.db
-с заполнением поля meal_time (завтрак/обед/ужин).
-
-Запускать локально, внимательно относиться к robots.txt и нагрузке на сайт.
-"""
 
 import re
 import time
